@@ -9,6 +9,7 @@
 
 void handle_sigint(int sig)
 {
+    (void)sig;
     printf("\nUse 'exit' to quit the Process Manager.\n");
     printf("process-manager> ");
     fflush(stdout);
@@ -18,6 +19,7 @@ void handle_sigchld(int sig)
 {
     int status;
     pid_t pid;
+    (void)sig;
 
     while ((pid = waitpid(-1, &status, WNOHANG)) > 0)
     {
