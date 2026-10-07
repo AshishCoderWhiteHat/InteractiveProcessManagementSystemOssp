@@ -8,6 +8,7 @@
 #include "../include/monitor.h"
 #include "../include/signals.h"
 #include "../include/pipes.h"
+#include "../include/redirect.h"
 
 int main()
 {
@@ -79,6 +80,13 @@ int main()
         if (tokens[0] == NULL)
         {
             free_tokens(tokens);
+            free(command);
+            continue;
+        }
+        
+        if (execute_redirection(tokens))
+	{
+    	    free_tokens(tokens);
             free(command);
             continue;
         }
