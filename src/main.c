@@ -7,6 +7,7 @@
 #include "../include/process.h"
 #include "../include/monitor.h"
 #include "../include/signals.h"
+#include "../include/pipes.h"
 
 int main()
 {
@@ -24,6 +25,54 @@ int main()
         printf("process-manager> ");
 
         command = read_line();
+
+        if (strchr(command, '|') != NULL)
+{
+    char *left;
+    char *right;
+
+    char *pipe_command1[64];
+    char *pipe_command2[64];
+
+    int i = 0;
+
+    left = strtok(command, "|");
+    right = strtok(NULL, "|");
+
+    if (left == NULL || right == NULL)
+    {
+        printf("Invalid pipe command.\n");
+        free(command);
+        continue;
+    }
+
+    char *token = strtok(left, " \t\n");
+
+    while (token != NULL && i < 63)
+    {
+        pipe_command1[i++] = token;
+        token = strtok(NULL, " \t\n");
+    }
+
+    pipe_command1[i] = NULL;
+
+    i = 0;
+
+    token = strtok(right, " \t\n");
+
+    while (token != NULL && i < 63)
+    {
+        pipe_command2[i++] = token;
+        token = strtok(NULL, " \t\n");
+    }
+
+    pipe_command2[i] = NULL;
+
+    execute_pipe(pipe_command1, pipe_command2);
+
+    free(command);
+    continue;
+}
 
         tokens = parse_line(command);
 
@@ -44,7 +93,8 @@ int main()
             printf("pause <PID>       - Pause a process\n");
             printf("resume <PID>      - Resume a process\n");
             printf("terminate <PID>   - Terminate a process\n");
-            printf("kill <PID>        - Force kill a process\n");
+	    printf("kill <PID>        - Force kill a process\n");
+	    printf("<cmd1> | <cmd2>   - Execute two commands using a pipe\n");
             printf("exit              - Exit the process manager\n\n");
         }
         else if (strcmp(tokens[0], "run") == 0)
