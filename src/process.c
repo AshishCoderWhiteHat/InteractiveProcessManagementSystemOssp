@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <signal.h>
 
 #include "../include/process.h"
 
@@ -18,6 +19,9 @@ void execute_process(char **args)
 
     if (pid == 0)
     {
+	signal(SIGINT, SIG_DFL);
+	signal(SIGTSTP, SIG_DFL);
+
         printf("Child process started. PID = %d\n", getpid());
 
         execvp(args[0], args);
@@ -47,6 +51,9 @@ void execute_background_process(char **args)
 
     if (pid == 0)
     {
+	signal(SIGINT, SIG_DFL);
+        signal(SIGTSTP, SIG_DFL);
+
         execvp(args[0], args);
 
         perror("execvp");

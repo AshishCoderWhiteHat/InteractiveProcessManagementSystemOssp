@@ -10,6 +10,8 @@
 
 int main()
 {
+    initialize_signals();
+
     char *command;
     char **tokens;
 

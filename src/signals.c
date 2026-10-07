@@ -2,8 +2,38 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include "../include/signals.h"
+
+void handle_sigint(int sig)
+{
+    printf("\nUse 'exit' to quit the Process Manager.\n");
+    printf("process-manager> ");
+    fflush(stdout);
+}
+
+void handle_sigchld(int sig)
+{
+    int status;
+    pid_t pid;
+
+    while ((pid = waitpid(-1, &status, WNOHANG)) > 0)
+    {
+        printf("\nBackground process %d finished.\n", pid);
+        printf("process-manager> ");
+        fflush(stdout);
+    }
+}
+
+void initialize_signals(void)
+{
+    signal(SIGINT, handle_sigint);
+
+    signal(SIGCHLD, handle_sigchld);
+}
+
 
 void pause_process(char *pid)
 {
