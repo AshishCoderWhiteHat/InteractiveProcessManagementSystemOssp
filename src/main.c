@@ -9,10 +9,12 @@
 #include "../include/signals.h"
 #include "../include/pipes.h"
 #include "../include/redirect.h"
+#include "../include/thread.h"
 
 int main()
 {
     initialize_signals();
+    start_monitor_thread();
 
     char *command;
     char **tokens;
@@ -102,6 +104,7 @@ int main()
             printf("resume <PID>      - Resume a process\n");
             printf("terminate <PID>   - Terminate a process\n");
 	    printf("kill <PID>        - Force kill a process\n");
+            printf("monitor           - Background process monitoring is active\n");
 	    printf("<cmd1> | <cmd2>   - Execute two commands using a pipe\n");
             printf("exit              - Exit the process manager\n\n");
         }
